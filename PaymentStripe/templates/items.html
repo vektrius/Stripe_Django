@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Items</title>
+</head>
+<body>
+{% for item in items %}
+<a href="{% url 'item' item.pk %}">{{ item.name }}</a>
+<br>
+{% endfor %}
+</body>
+</html>
