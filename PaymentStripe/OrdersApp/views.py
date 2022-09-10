@@ -43,7 +43,6 @@ def GetOrderCheckOutView(request, order_id: int):
     order = Order.objects.prefetch_related('items').get(pk=order_id)
 
     session = stripe.checkout.Session.create(
-        currency="rub",
         line_items=[{
             'price_data': {
                 'currency': item.currency,
@@ -99,8 +98,8 @@ class OrderCreateView(CreateView):
     template_name = 'order_create.html'
     success_url = '/'
 
+
 class OrderListView(ListView):
     model = Order
     template_name = 'orders.html'
     context_object_name = 'orders'
-

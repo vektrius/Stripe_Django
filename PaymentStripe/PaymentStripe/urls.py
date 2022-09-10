@@ -17,13 +17,18 @@ from django.contrib import admin
 from django.shortcuts import render
 from django.urls import path
 
-from OrdersApp.views import GetSessionIdView, ItemView, ItemCreateView, ItemListView
+from OrdersApp.views import GetProductCheckOutView, ItemView, ItemCreateView, ItemListView, OrderCreateView, OrderView, \
+    GetOrderCheckOutView, OrderListView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('buy/<int:item_id>/', GetSessionIdView, name='getsession'),
-    path('item/<int:item_id>/', ItemView.as_view(), name='item'),
-    path('create/', ItemCreateView.as_view(), name='create_item'),
+    path('buy/<int:item_id>/', GetProductCheckOutView, name='buy_item'),
+    path('items/<int:item_id>/', ItemView.as_view(), name='item'),
+    path('orders/<int:order_id>/', OrderView.as_view(), name='order'),
+    path('orders/buy/<int:order_id>/', GetOrderCheckOutView, name='buy_order'),
+    path('item/create/', ItemCreateView.as_view(), name='create_item'),
     path('items/', ItemListView.as_view(), name='items_list'),
+    path('orders/', OrderListView.as_view(), name='orders_list'),
+    path('orders/create/', OrderCreateView.as_view(),name='create_order'),
     path('', lambda request: render(request, 'main.html', {}), name='main')
 ]
