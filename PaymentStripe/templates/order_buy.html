@@ -6,20 +6,22 @@
     <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
-<h1>{{ item.pk }} - {{ item.name }}</h1>
-<p>{{ item.discription }}</p>
-<p>{{ item.price }} {{ item.currency }}</p>
+<h1> Заказ - {{ order.pk }}</h1>
+{% for item in order.items.all %}
+    <p>{{ item.name }}: {{ item.price }} {{ item.currency }}</p>
+{% endfor %}
 <button id="buy-button">Buy</button>
+
 <script type="text/javascript">
     var stripe = Stripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
     var buyButton = document.getElementById('buy-button');
     buyButton.addEventListener('click', function () {
-        fetch('{% url 'buy_item' item.pk %}', {method: 'GET'}).then(response => {
+        fetch('{% url 'buy_order' order.pk %}', {method: 'GET'}).then(response => {
             return response.json()
         })
             .then(session => stripe.redirectToCheckout({sessionId: session.session_id}))
     });
 </script>
-
 </body>
+
 </html>

@@ -16,3 +16,9 @@ class Item(models.Model):
     price = models.DecimalField(verbose_name='Цена', max_digits=12, decimal_places=2, validators=[MinValueValidator(0)],
                                 null=False, blank=False)
     currency = models.CharField(max_length=3, choices=currency_choise)
+
+    def __str__(self):
+        return f"{self.name} : {self.price} {self.currency}"
+
+class Order(models.Model):
+    items = models.ManyToManyField(Item,verbose_name='Предметы в заказе')
