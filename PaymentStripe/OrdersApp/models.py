@@ -51,8 +51,8 @@ class Tax(models.Model):
 class Order(models.Model):
     items = models.ManyToManyField(Item, verbose_name='Предметы в заказе')
     currency = models.CharField(max_length=3, choices=currency_choice, verbose_name='Валюта оформления заказа')
-    discounts = models.ManyToManyField(Discount, verbose_name='Купоны',blank=True)
-    taxes = models.ManyToManyField(Tax, verbose_name='Налоги',blank=True)
+    discounts = models.ManyToManyField(Discount, verbose_name='Купоны', blank=True)
+    taxes = models.ManyToManyField(Tax, verbose_name='Налоги', blank=True)
 
     def __str__(self):
         return f"Заказ - {self.id}"

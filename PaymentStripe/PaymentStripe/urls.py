@@ -17,11 +17,8 @@ from django.contrib import admin
 from django.shortcuts import render
 from django.urls import path, include
 
-from OrdersApp.views import get_product_checkout_view, ItemView, ItemCreateView, ItemListView, OrderCreateView, OrderView, \
-    get_order_checkout_view, OrderListView
-
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('OrdersApp.urls')),
+    path('', include('OrdersApp.urls')),
     path('', lambda request: render(request, 'main.html', {}), name='main')
 ]
