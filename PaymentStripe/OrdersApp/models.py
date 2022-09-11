@@ -32,7 +32,7 @@ class Discount(models.Model):
     percent_off = models.IntegerField(verbose_name='Процент скидки',
                                       validators=[MinValueValidator(0), MaxValueValidator(100)])
     duration = models.CharField(max_length=16, choices=duration_choice, verbose_name='Длительность')
-    duration_in_months = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(12)])
+    duration_in_months = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(12)],null=True,blank=True)
 
     def __str__(self):
         return self.name
