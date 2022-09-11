@@ -36,10 +36,12 @@ def get_product_checkout_view(request, item_id: int):
                 'currency': item.currency,
                 'product_data': {
                     'name': item.name,
+                    'description': item.description,
                 },
                 'unit_amount_decimal': item.price * 100,
             },
             'quantity': 1,
+            'tax_rates': stripe.TaxRate.create(display_name="Test Tax", inclusive=False, percentage=16)
         }],
         mode='payment',
         success_url='https://url.com',
@@ -63,6 +65,9 @@ def get_order_checkout_view(request, order_id: int):
                 'unit_amount_decimal': сonvertation(item, order.currency) * 100,
             },
             'quantity': 1,
+            'tax_rates': [
+                stripe.TaxRate.create(display_name=tax.name, inclusive=tax.inclusive, percentage=tax.percentage).id
+                for tax in order.taxes.all()]
         } for item in order.items.all()],
         discounts=[{
             'coupon': stripe.Coupon.create(
