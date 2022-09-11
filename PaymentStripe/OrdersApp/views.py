@@ -1,5 +1,8 @@
 import os
+from decimal import Decimal, getcontext
+from typing import Literal
 
+import requests
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 import stripe
@@ -14,7 +17,16 @@ from OrdersApp.models import Item, Order
 stripe.api_key = os.getenv("STRIPE_KEY_BACKEND")
 
 
-def GetProductCheckOutView(request, item_id: int):
+def сonvertation(item: Item, currency: Literal['USD', 'RUB']) -> Decimal:
+    ''' Convertation item currency  to need currency '''
+
+    item_currency = item.currency.upper()
+    exchange_rates = requests.get(f"https://api.exchangerate-api.com/v4/latest/{item_currency}").json()['rates']
+    converted_price = float(item.price) * exchange_rates[currency]
+    return Decimal(converted_price).quantize(Decimal("1.00"))
+
+
+def get_product_checkout_view(request, item_id: int):
     ''' Get session id for the item '''
 
     item = Item.objects.get(pk=item_id)
@@ -37,22 +49,27 @@ def GetProductCheckOutView(request, item_id: int):
     return JsonResponse({"session_id": session.id})
 
 
-def GetOrderCheckOutView(request, order_id: int):
+def get_order_checkout_view(request, order_id: int):
     ''' Get session id for the order '''
 
-    order = Order.objects.prefetch_related('items').get(pk=order_id)
-
+    order = Order.objects.prefetch_related('items', 'discounts').get(pk=order_id)
     session = stripe.checkout.Session.create(
         line_items=[{
             'price_data': {
-                'currency': item.currency,
+                'currency': order.currency,
                 'product_data': {
                     'name': item.name,
                 },
-                'unit_amount_decimal': item.price * 100,
+                'unit_amount_decimal': сonvertation(item, order.currency) * 100,
             },
             'quantity': 1,
         } for item in order.items.all()],
+        discounts=[{
+            'coupon': stripe.Coupon.create(
+                percent_off=coupon.percent_off,
+                duration=coupon.duration,
+                duration_in_months=coupon.duration_in_months,
+            ).id} for coupon in order.discounts.all()],
 
         mode='payment',
         success_url='https://url.com',
