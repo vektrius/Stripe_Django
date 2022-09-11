@@ -18,7 +18,7 @@ duration_choice = (
 
 class Item(models.Model):
     name = models.CharField(max_length=128, verbose_name='Название продукта', null=False, blank=False)
-    discription = models.TextField(verbose_name='Описание продукта')
+    description = models.TextField(verbose_name='Описание продукта')
     price = models.DecimalField(verbose_name='Цена', max_digits=12, decimal_places=2, validators=[MinValueValidator(0)],
                                 null=False, blank=False)
     currency = models.CharField(max_length=3, choices=currency_choice)
@@ -50,9 +50,9 @@ class Tax(models.Model):
 
 class Order(models.Model):
     items = models.ManyToManyField(Item, verbose_name='Предметы в заказе')
-    currency = models.CharField(max_length=3, choices=currency_choice,verbose_name='Валюта оформления заказа')
-    discounts = models.ManyToManyField(Discount, verbose_name='Купоны')
-    taxes = models.ManyToManyField(Tax, verbose_name='Налоги')
+    currency = models.CharField(max_length=3, choices=currency_choice, verbose_name='Валюта оформления заказа')
+    discounts = models.ManyToManyField(Discount, verbose_name='Купоны',blank=True)
+    taxes = models.ManyToManyField(Tax, verbose_name='Налоги',blank=True)
 
     def __str__(self):
         return f"Заказ - {self.id}"
