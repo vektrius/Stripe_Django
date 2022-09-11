@@ -23,7 +23,6 @@ def get_product_checkout_view(request, item_id: int) -> JsonResponse:
     ''' Get session id for the item '''
 
     item = Item.objects.get(pk=item_id)
-    print(item)
     session = stripe.checkout.Session.create(
         line_items=[{
             'price_data': {
@@ -48,7 +47,6 @@ def get_order_checkout_view(request, order_id: int) -> JsonResponse:
 
     order = Order.objects.prefetch_related('items', 'discounts', 'taxes').get(pk=order_id)
 
-    time1 = time.time()
     session = stripe.checkout.Session.create(
         line_items=_get_line_items_for_order(order),
         discounts=_get_coupon_for_order(order),
@@ -56,7 +54,6 @@ def get_order_checkout_view(request, order_id: int) -> JsonResponse:
         success_url='https://url.com',
         cancel_url='https://url.com',
     )
-    print(time.time() - time1)
     return JsonResponse({"session_id": session.id})
 
 
