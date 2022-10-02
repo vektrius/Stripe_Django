@@ -26,7 +26,7 @@ Integration with Stripe was done with Django.
     $ docker build -t paymentdjango .
 4. Run container:
 
-    $ docker run -p 8000:8000 paymentdjango
+    $ docker run -p 8000:8000 --env-file=.env paymentdjango
 5. Open site:
 
     http://127.0.0.1:8000/
