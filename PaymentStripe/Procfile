@@ -1,1 +1,0 @@
-web: gunicorn PaymentStripe.wsgi --log-file -
